@@ -32,5 +32,9 @@ func TestMemLib(t* testing.T) {
 
 	err = mem.Close()
 	if err !=nil {t.Errorf("error closeMemLib: %v", err)}
+
+	size = GetBlockSize()
+	if size != 4096 {t.Errorf("error blocksize is not 4096")}
+
 	return
 }
