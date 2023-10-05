@@ -37,11 +37,14 @@ func InitMemLib(blocks uint64) (mem *memObj, err error){
 
 	if err != nil {return nil, fmt.Errorf("MMap init: %v", err)}
 
+	ctlslice := data[:BLOCKSIZE]
+	newslice := data[BLOCKSIZE:]
+
 	memobj := memObj {
 		Size: memsize,
 		Free: memsize - BLOCKSIZE,
-		Ctl : &data,
-//		Start: &(data[BLOCKSIZE:]),
+		Ctl : &ctlslice,
+		Start: &newslice,
 	}
 
 	return &memobj, nil
