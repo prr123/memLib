@@ -19,6 +19,7 @@ type memObj struct {
 	Size uint64 // memory in blocks
 	Unit uint64
 	Free uint64
+	all *[]byte
 	Start *[]byte
 	Ctl *[]byte
 }
@@ -43,6 +44,7 @@ func InitMemLib(blocks uint64) (mem *memObj, err error){
 	memobj := memObj {
 		Size: memsize,
 		Free: memsize - BLOCKSIZE,
+		all: &data,
 		Ctl : &ctlslice,
 		Start: &newslice,
 	}
@@ -53,7 +55,7 @@ func InitMemLib(blocks uint64) (mem *memObj, err error){
 
 func (mem *memObj)Close()(err error) {
 
-	b := *(mem.Ctl)
+	b := *(mem.all)
 	err = unix.Munmap(b)
 
 	if err != nil {return fmt.Errorf("Unmap: %v", err)}
