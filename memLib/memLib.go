@@ -13,9 +13,10 @@ import (
 	"golang.org/x/sys/unix"
 	)
 
-const BLOCKSIZE = 4096
+//const BLOCKSIZE = 4096
 
 type memObj struct {
+	BlkSize uint64
 	Size uint64 // memory in blocks
 	Unit uint64
 	Free uint64
@@ -26,7 +27,8 @@ type memObj struct {
 
 func InitMemLib(blocks uint64) (mem *memObj, err error){
 
-	memsize := blocks*BLOCKSIZE
+	blksize := unix.Getpagesize()
+	memsize := blocks*uint64(blksize)
 
 	data , err := unix.Mmap(
 		-1,                                  // required by MAP_ANONYMOUS
@@ -38,12 +40,14 @@ func InitMemLib(blocks uint64) (mem *memObj, err error){
 
 	if err != nil {return nil, fmt.Errorf("MMap init: %v", err)}
 
-	ctlslice := data[:BLOCKSIZE]
-	newslice := data[BLOCKSIZE:]
+	ctlslice := data[:blksize]
+	newslice := data[blksize:]
+
 
 	memobj := memObj {
+		BlkSize: uint64(blksize),
 		Size: memsize,
-		Free: memsize - BLOCKSIZE,
+		Free: memsize - uint64(blksize),
 		all: &data,       // pointer to total byte slice
 		Ctl : &ctlslice,  // pointer to control block slice
 		Start: &newslice, // pointer to data slice
@@ -66,6 +70,5 @@ func (mem *memObj)Close()(err error) {
 
 func GetBlockSize()(size int){
 
-	size = int(BLOCKSIZE)
-	return size
+	return unix.Getpagesize()
 }
