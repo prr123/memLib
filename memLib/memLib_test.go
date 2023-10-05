@@ -20,11 +20,12 @@ func TestMemLib(t* testing.T) {
 
 	bytsl := (*mem.Ctl)
 	size := len(bytsl)
-	if size != BLOCKSIZE {t.Errorf("error -- Ctl %d != 4096", size)}
+	blksize := mem.BlkSize
+	if size != int(blksize) {t.Errorf("error -- Ctl %d != 4096", size)}
 
 	datsl := (*mem.Start)
 	size = len(datsl)
-	if size != int((numBlocks - uint64(1))*BLOCKSIZE) {t.Errorf("error -- Data %d != 4096", size)}
+	if size != int((numBlocks - uint64(1))*blksize) {t.Errorf("error -- Data %d != 4096", size)}
 
 
 	datsl[1]='7'
