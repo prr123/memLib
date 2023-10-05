@@ -14,19 +14,21 @@ import (
 func TestMemLib(t* testing.T) {
 
 	// creating two blocks
-	mem, err := InitMemLib(2)
+	numBlocks := uint64(2)
+	mem, err := InitMemLib(numBlocks)
 	if err !=nil {t.Errorf("error initMemLib: %v", err)}
 
 	bytsl := (*mem.Ctl)
 	size := len(bytsl)
+	if size != BLOCKSIZE {t.Errorf("error -- Ctl %d != 4096", size)}
 
-	if size != BLOCKSIZE * 2 {t.Errorf("error -- %d != 4096*2", size)}
+	datsl := (*mem.Start)
+	size = len(datsl)
+	if size != int((numBlocks - uint64(1))*BLOCKSIZE) {t.Errorf("error -- Data %d != 4096", size)}
 
-	(*mem.Ctl)[BLOCKSIZE]='7'
 
-	val := 	(*mem.Ctl)[BLOCKSIZE]
-
-	if val != '7' {t.Errorf("error value is not 7!")}
+	datsl[1]='7'
+	if datsl[1] != '7' {t.Errorf("error value is not 7!")}
 
 	return
 }
