@@ -30,5 +30,7 @@ func TestMemLib(t* testing.T) {
 	datsl[1]='7'
 	if datsl[1] != '7' {t.Errorf("error value is not 7!")}
 
+	err = mem.Close()
+	if err !=nil {t.Errorf("error closeMemLib: %v", err)}
 	return
 }
