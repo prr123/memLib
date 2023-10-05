@@ -44,9 +44,9 @@ func InitMemLib(blocks uint64) (mem *memObj, err error){
 	memobj := memObj {
 		Size: memsize,
 		Free: memsize - BLOCKSIZE,
-		all: &data,
-		Ctl : &ctlslice,
-		Start: &newslice,
+		all: &data,       // pointer to total byte slice
+		Ctl : &ctlslice,  // pointer to control block slice
+		Start: &newslice, // pointer to data slice
 	}
 
 	return &memobj, nil
@@ -62,4 +62,10 @@ func (mem *memObj)Close()(err error) {
 
 	mem = nil
 	return nil
+}
+
+func GetBlockSize()(size int){
+
+	size = int(BLOCKSIZE)
+	return size
 }
